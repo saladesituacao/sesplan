@@ -25,15 +25,15 @@ A pasta sesplan/databaseteste contém os arquivos Postgres dump, que permitem cr
 
 ## Parâmetros do Banco de dados (variáveis de ambiente)
 
-##### HOST
+##### DBHOST
 	Endereço IP do servidor de banco de dados.
-##### PORT
+##### DBPORT
 	Porta de acesso.	
 ##### DBNAME
 	Nome do banco de dados.
-##### USER
+##### DBUSER
 	Usuário do banco de dados.
-##### PASSWORD
+##### DBPASSWORD
 	Senha do usuário do banco de dados.
 ##### SESAPI
 	Url para comunicação com a API/SES-DF.
