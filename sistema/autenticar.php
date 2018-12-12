@@ -130,6 +130,7 @@ if ($_SESSION["txt_tipo_autenticacao"] == "1") {
         js_go("login.php?mensagem=5");
         exit();
     }    
+
     
     js_go("index.php");    
 } else {

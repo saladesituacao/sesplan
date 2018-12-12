@@ -2,8 +2,8 @@
 include_once(__DIR__ . "/config.php");
 include_once(__DIR__ . "/include.php");
  
-if ($_SERVER['SERVER_NAME'] == "localhost") {
-  $con_string = "host= port= dbname= user= password="; 
+if ($_SERVER['SERVER_NAME'] == "xxlocalhost") {
+  $con_string = "host= ".getenv('DBHOST')." port= ".getenv('DBPORT')." dbname= ".getenv('DBNAME')." user= ".getenv('DBUSER')." password= ".getenv('DBPASSWORD'); 
 }
 else {
   $con_string = "host= ".getenv('DBHOST')." port= ".getenv('DBPORT')." dbname= ".getenv('DBNAME')." user= ".getenv('DBUSER')." password= ".getenv('DBPASSWORD');

@@ -13,4 +13,5 @@ RUN ln -s /usr/lib/x86_64-linux-gnu/liblber.so /usr/lib/liblber.so
 RUN docker-php-ext-install ldap
 RUN docker-php-ext-configure ldap
 COPY . /var/www/html/sesplan
+RUN chmod -R 755 /var/www/html
 RUN rm -rf /var/lib/apt/lists/*

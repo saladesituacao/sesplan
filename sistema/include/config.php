@@ -6,7 +6,7 @@ $url = "http://" . $dominio;
 //LOCAL
 $_SESSION["txt_host"] = $url;
 
-if ($_SERVER['SERVER_NAME'] == "localhost") {
+if ($_SERVER['SERVER_NAME'] == "xxlocalhost") {
     $_SESSION["url_api_mgi"] = "";
     $_SESSION['ldap_server'] = "";
     $_SESSION['ldap_dominio'] = "";
@@ -24,6 +24,6 @@ $_SESSION["txt_pagina_login"] = $_SESSION["txt_host"]."/sesplan/index.html";
 $_SESSION["txt_caminho_aplicacao"] = $_SESSION["txt_host"]."/sesplan/sistema";
 $_SESSION["txt_sigla_sistema"] = "SESPLAN";
 $_SESSION["txt_pagina_inicial"] = $_SESSION["txt_caminho_aplicacao"]."/index.php";
-$_SESSION["txt_tipo_autenticacao"] = "1"; //1 = LDAP, 2 = API
+$_SESSION["txt_tipo_autenticacao"] = "2"; //1 = LDAP, 2 = API
 
 ?>
