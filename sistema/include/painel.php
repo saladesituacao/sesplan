@@ -1,5 +1,12 @@
 <?php
 include_once (__DIR__ . "/conexao.php");
+include_once (__DIR__ . "/../classes/clsIndicador.php");
+include_once (__DIR__ . "/../classes/clsPas.php");
+include_once (__DIR__ . "/../classes/clsSag.php");
+
+$clsIndicador = new clsIndicador();
+$clsPas = new clsPas();
+$clsSag = new clsSag();
 
 $acao = $_REQUEST['acao'];
 $cod_modulo = $_REQUEST['cod_modulo'];
@@ -171,19 +178,21 @@ switch ($acao) {
         echo(json_encode($arr));
         break;
 
-    case 'porcentagem_indicador':
-        if ($cod_status != '0') {
-            $sql = "SELECT cod_chave FROM tb_indicador";
-            $query = pg_query($sql);
-            if(pg_num_rows($query) > 0) {
-                $total = pg_num_rows($query);
+    case 'porcentagem_pas':
+        $qtd_total_pas = qtd_total_pas();
+        if($qtd_total_pas > 0) {
+            $total = $qtd_total_pas;
 
-                $sql = "SELECT COUNT(tb.cod_chave) AS qtd FROM SESPLAN.tb_indicador_analise tb ";
-                $sql .= " WHERE tb.cod_periodo = (SELECT MAX(t.cod_periodo) FROM SESPLAN.tb_indicador_analise t WHERE t.cod_chave = tb.cod_chave) ";
-                $sql .= " AND tb.cod_status = ".$cod_status;
-                $query = pg_query($sql);
-                $row = pg_fetch_assoc($query);
-                $total_status = $row['qtd'];
+            $sql = "SELECT cod_pas FROM tb_pas WHERE EXTRACT(YEAR from tb_pas.dt_inclusao) = ".$_SESSION['ano_corrente'];
+            $q1 = pg_query($sql);
+            if (pg_num_rows($q1) > 0) {
+                $total_status = 0;
+                while ($r = pg_fetch_array($q1)) {
+                    $_cod_status_painel = $clsPas->SituacaoPAS($r['cod_pas']);
+                    if (strval($_cod_status_painel) == strval($cod_status)) {
+                        $total_status = $total_status + 1;
+                    }
+                }
 
                 $resultado = $total_status * 100;
                 $resultado = $resultado / $total;
@@ -193,33 +202,200 @@ switch ($acao) {
                     $resultado = trim(str_replace(substr($resultado, -3), "", $resultado));  
                 }
 
-                echo($resultado);
+                echo($resultado."|".$total_status);
             } else {
-                echo("0");
-            }    
+                echo("0|0");
+            }
         } else {
-            $hidden_alerta_result = $_REQUEST['hidden_alerta_result'];
-            $hidden_muito_critico_result = $_REQUEST['hidden_muito_critico_result'];
-            $hidden_critico_result = $_REQUEST['hidden_critico_result'];
-            $hidden_esperado_result = $_REQUEST['hidden_esperado_result'];
-            $hidden_superado_result = $_REQUEST['hidden_superado_result'];
+            echo("0|0");
+        }
+        break;
 
-            $hidden_alerta_result = str_replace(',', '.', $hidden_alerta_result);
-            $hidden_muito_critico_result = str_replace(',', '.', $hidden_muito_critico_result);
-            $hidden_critico_result = str_replace(',', '.', $hidden_critico_result);
-            $hidden_esperado_result = str_replace(',', '.', $hidden_esperado_result);
-            $hidden_superado_result = str_replace(',', '.', $hidden_superado_result);
-
-            $resultado = 100 - ($hidden_alerta_result + $hidden_muito_critico_result + $hidden_critico_result + $hidden_esperado_result + $hidden_superado_result);
-            $resultado = str_replace('.', ',', $resultado);
-            if (substr($resultado, -3) == ',00') {
-                $resultado = trim(str_replace(substr($resultado, -3), "", $resultado));  
+    case 'porcentagem_sag':
+        $qtd_total_sag = qtd_total_sag();        
+        if($qtd_total_sag > 0) {
+            $total = $qtd_total_sag;
+            $cod_mes_monitoramento = $clsSag->MesMonitoramentoPainel();             
+            
+            if(strval($cod_status) == "24") {
+                $condicao_sag = " AND cod_sag NOT IN(SELECT cod_sag FROM tb_sag_analise WHERE cod_bimestre = ".$cod_mes_monitoramento.")";   
+            } else {
+                $condicao_sag = " AND cod_sag IN(SELECT cod_sag FROM tb_sag_analise WHERE cod_bimestre = ".$cod_mes_monitoramento." AND cod_status = ".$cod_status.")";   
             }
 
-            echo($resultado);
+            $sql = "SELECT COUNT(cod_sag) AS qtd FROM tb_sag INNER JOIN tb_programa_trabalho ON tb_programa_trabalho.cod_programa_trabalho = tb_sag.cod_programa_trabalho 
+                    WHERE EXTRACT(YEAR from tb_sag.dt_inclusao) = ".$_SESSION['ano_corrente']." AND tb_programa_trabalho.cod_emenda IN (0,1)".$condicao_sag;                        
+                       
+            $q1 = pg_query($sql);
+            if (pg_num_rows($q1) > 0) {                
+                $r = pg_fetch_array($q1);
+                $total_status = $r['qtd'];                
+
+                $resultado = $total_status * 100;
+                $resultado = $resultado / $total;
+                $resultado = @number_format($resultado, 2, ',', '.');
+
+                if (substr($resultado, -3) == ',00') {
+                    $resultado = trim(str_replace(substr($resultado, -3), "", $resultado));  
+                }
+
+                echo($resultado."|".$total_status);
+            } else {
+                echo("0|0");
+            }
+        } else {
+            echo("0|0");
+        }
+    break;
+
+    case 'porcentagem_indicador':
+        if ($cod_status != '0') {
+            $qtd_total_indicadores = qtd_total_indicadores();
+            if($qtd_total_indicadores > 0) {
+                $total = $qtd_total_indicadores;                                  
+                
+                $sql = "SELECT cod_chave, cod_indicador, ds_periodicidade FROM tb_indicador ";
+                $sql .= " INNER JOIN tb_indicador_tag ON tb_indicador_tag.co_indicador = tb_indicador.cod_indicador ";
+                $sql .= " WHERE EXTRACT(YEAR from tb_indicador.dt_inclusao) = ".$_SESSION['ano_corrente'];                
+                $sql .= " GROUP BY cod_chave, cod_indicador, ds_periodicidade ";
+
+                $q1 = pg_query($sql);
+                if (pg_num_rows($q1) > 0) {
+                    $total_status = 0;
+                    while ($r = pg_fetch_array($q1)) {
+                        $cod_mes_monitoramento = $clsIndicador->MesMonitoramentoPainel($r['ds_periodicidade']);
+
+                        if ($cod_mes_monitoramento != "") {  
+                            if (intval($cod_mes_monitoramento) <= intval($_SESSION['mes_corrente'])) {
+                                $sql = "SELECT COUNT(tb.cod_chave) AS qtd FROM tb_indicador_analise tb ";
+                                $sql .= " WHERE tb.cod_chave = ".$r['cod_chave']." AND tb.cod_periodo = ".$cod_mes_monitoramento;
+                                $sql .= " AND tb.cod_status = ".$cod_status;
+                                $query = pg_query($sql);
+                                $row = pg_fetch_assoc($query);
+                                $total_status = $total_status + $row['qtd'];                                                                
+                            }                                                                                                              
+                        }
+                    }                                             
+                    $resultado = $total_status * 100;
+                    $resultado = $resultado / $total;
+                    $resultado = @number_format($resultado, 2, ',', '.');
+
+                    if (substr($resultado, -3) == ',00') {
+                        $resultado = trim(str_replace(substr($resultado, -3), "", $resultado));  
+                    }
+
+                    echo($resultado."|".$total_status);
+                } else {                    
+                    echo("0|0");
+                }                
+            } else {                              
+                echo("0|0");
+            }    
+        } else {
+            $qtd_total_indicadores = qtd_total_indicadores();
+
+            if($qtd_total_indicadores > 0) {
+                $total = $qtd_total_indicadores;
+                
+                $sql = "SELECT ds_periodicidade FROM tb_indicador ";
+                $sql .= " INNER JOIN tb_indicador_tag ON tb_indicador_tag.co_indicador = tb_indicador.cod_indicador ";
+                $sql .= " WHERE EXTRACT(YEAR from tb_indicador.dt_inclusao) = ".$_SESSION['ano_corrente'];
+                $sql .= " GROUP BY ds_periodicidade ";
+
+                $sql = "SELECT cod_chave, cod_indicador, ds_periodicidade FROM tb_indicador ";
+                $sql .= " INNER JOIN tb_indicador_tag ON tb_indicador_tag.co_indicador = tb_indicador.cod_indicador ";
+                $sql .= " WHERE EXTRACT(YEAR from tb_indicador.dt_inclusao) = ".$_SESSION['ano_corrente'];                
+                $sql .= " GROUP BY cod_chave, cod_indicador, ds_periodicidade ";
+
+                $q1 = pg_query($sql);
+                if (pg_num_rows($q1) > 0) {
+                    $total_status = 0;
+                    while ($r = pg_fetch_array($q1)) {
+                        $cod_mes_monitoramento = $clsIndicador->MesMonitoramentoPainel($r['ds_periodicidade']);
+    
+                        if ($cod_mes_monitoramento != "") {  
+                            if (intval($cod_mes_monitoramento) <= intval($_SESSION['mes_corrente'])) {
+                                $sql = "SELECT COUNT(tb.cod_chave) AS qtd ";
+                                $sql .= " FROM tb_indicador tb ";                      
+                                $sql .= " WHERE tb.cod_chave = ".$r['cod_chave']." AND tb.cod_chave NOT IN( ";
+                                $sql .= " SELECT u.cod_chave FROM tb_indicador_analise u WHERE u.cod_periodo = ".$cod_mes_monitoramento.") ";
+                                $query = pg_query($sql);
+                                $row = pg_fetch_assoc($query);
+                                $total_status = $total_status + $row['qtd'];
+                            }                                                                                                              
+                        }                        
+                    }
+    
+                    $resultado = $total_status * 100;
+                    $resultado = $resultado / $total;
+                    $resultado = @number_format($resultado, 2, ',', '.');
+    
+                    if (substr($resultado, -3) == ',00') {
+                        $resultado = trim(str_replace(substr($resultado, -3), "", $resultado));  
+                    }
+                    
+                    echo($resultado."|".$total_status);
+                } else {                    
+                    echo("0|0");
+                }  
+            } else {                               
+                echo("0|0");
+            }                                
         }        
 
-        break; 
+        break;            
+
+    case 'qtd_total_indicadores':        
+        echo(qtd_total_indicadores());
+        break;
+
+    case 'qtd_total_pas':        
+        echo(qtd_total_pas());
+        break;
+
+    case 'qtd_total_sag':
+        echo(qtd_total_sag());
+        break;
+
+    case 'ano_corrente':
+        $_SESSION['ano_corrente'] = $_REQUEST['cod_ano_corrente'];
+        echo($_SESSION['ano_corrente']);
+        break;
+
+    case 'mes_corrente':
+        $_SESSION['mes_corrente'] = $_REQUEST['cod_mes_corrente'];
+        echo($_SESSION['mes_corrente']);
+        break;    
+
+    case 'bimestre_corrente':
+        $_SESSION['cod_bimestre_corrente'] = $_REQUEST['cod_bimestre_corrente'];
+        echo($_SESSION['cod_bimestre_corrente']);
+        break;
 }
 
+function qtd_total_indicadores() {
+    $sql = "SELECT COUNT(cod_chave) AS qtd FROM tb_indicador ";
+    $sql .= " WHERE EXTRACT(YEAR from dt_inclusao) = ".$_SESSION['ano_corrente'];
+    $query = pg_query($sql);
+    $row = pg_fetch_assoc($query);
+
+    return $row['qtd'];
+}
+
+function qtd_total_pas() {
+    $sql = "SELECT COUNT(cod_pas) AS qtd FROM tb_pas ";
+    $sql .= " WHERE EXTRACT(YEAR from dt_inclusao) = ".$_SESSION['ano_corrente'];
+    $query = pg_query($sql);
+    $row = pg_fetch_assoc($query);
+
+    return $row['qtd'];
+}
+
+function qtd_total_sag() {
+    $sql = "SELECT COUNT(cod_sag) AS qtd FROM tb_sag WHERE EXTRACT(YEAR from dt_inclusao) = ".$_SESSION['ano_corrente'];   
+    $query = pg_query($sql);
+    $row = pg_fetch_assoc($query);
+
+    return $row['qtd'];
+}
 ?>

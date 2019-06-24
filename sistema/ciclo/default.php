@@ -5,7 +5,7 @@ include_once (__DIR__ . "/../classes/clsCiclo.php");
 verifica_seguranca();
 cabecalho();
 permissao_acesso_pagina(92);
- 
+
 if (empty($_REQUEST['log'])) {    
 	Auditoria(129, "Listar Ciclo do Planejamento", "");
 }
@@ -37,23 +37,43 @@ $clsCiclo = new clsCiclo();
     </form>      
 </div>
 <?php
-$cadeia_valor = $clsCiclo->RetornaArquivo(1);
+/*$cadeia_valor = $clsCiclo->RetornaArquivo(1);
 $mapa_estrategico = $clsCiclo->RetornaArquivo(2);
 $pds = $clsCiclo->RetornaArquivo(3);
 $ldo = $clsCiclo->RetornaArquivo(5);
 $ppa = $clsCiclo->RetornaArquivo(4);
-$ar = $clsCiclo->RetornaArquivo(6);
+$ar = $clsCiclo->RetornaArquivo(6);*/
 ?>
 <map name="planetmap">  
   <area shape="rect" coords="369,196,454,246" href="<?php echo($_SESSION["txt_caminho_aplicacao"]); ?>/pas/opcao.php">
   <area shape="rect" coords="664,120,901,171" href="<?php echo($_SESSION["txt_caminho_aplicacao"]); ?>/sag/opcao.php">
-  <area shape="rect" coords="134,115,214,105" <?php echo("href='".$_SESSION["txt_caminho_aplicacao"]."/visualizador/web/viewer.html?file=".urlencode($_SESSION['txt_caminho_aplicacao']."/ciclo/digital/".$cadeia_valor)."'") ?> >
-  <area shape="rect" coords="188,132,262,170" <?php echo("href='".$_SESSION["txt_caminho_aplicacao"]."/visualizador/web/viewer.html?file=".urlencode($_SESSION['txt_caminho_aplicacao']."/ciclo/digital/".$mapa_estrategico)."'") ?> >
-  <area shape="rect" coords="370,122,453,171" <?php echo("href='".$_SESSION["txt_caminho_aplicacao"]."/visualizador/web/viewer.html?file=".urlencode($_SESSION['txt_caminho_aplicacao']."/ciclo/digital/".$pds)."'") ?> >
-  <area shape="rect" coords="458,197,539,244" <?php echo("href='".$_SESSION["txt_caminho_aplicacao"]."/visualizador/web/viewer.html?file=".urlencode($_SESSION['txt_caminho_aplicacao']."/ciclo/digital/".$ldo)."'") ?> >
-  <area shape="rect" coords="458,123,628,169" <?php echo("href='".$_SESSION["txt_caminho_aplicacao"]."/visualizador/web/viewer.html?file=".urlencode($_SESSION['txt_caminho_aplicacao']."/ciclo/digital/".$ppa)."'") ?> >
-  <area shape="rect" coords="178,197,364,247" <?php echo("href='".$_SESSION["txt_caminho_aplicacao"]."/visualizador/web/viewer.html?file=".urlencode($_SESSION['txt_caminho_aplicacao']."/ciclo/digital/".$ar)."'") ?> >
+  <area shape="rect" coords="134,115,214,105" <?php echo("onclick='Ver(1);'")?> >
+  <area shape="rect" coords="188,132,262,170" <?php echo("onclick='Ver(2);'")?> >
+  <area shape="rect" coords="370,122,453,171" <?php echo("onclick='Ver(3);'")?> >
+  <area shape="rect" coords="458,197,539,244" <?php echo("onclick='Ver(5);'")?> >
+  <area shape="rect" coords="458,123,628,169" <?php echo("onclick='Ver(4);'")?> >
+  <area shape="rect" coords="178,197,364,247" <?php echo("onclick='Ver(6);'")?> >
 </map>
 <?php
 rodape($dbcon);
 ?>
+
+<script>
+    function Ver(cod_tipo_documento) {
+        $.ajax({
+            type: 'POST',
+            url: 'manter.php',            
+            data: {
+                acao: 'temp',
+                cod_tipo_documento: cod_tipo_documento       				
+            },
+            async: false,
+            success: function (data) {                                                                                    
+                js_go($.parseJSON(data)['url']);            
+            },				
+            error: function (xhr, status, error) {
+                alert(xhr.responseText);    				
+            }
+        });
+    }
+</script>

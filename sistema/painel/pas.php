@@ -7,7 +7,7 @@ $clsPas = new clsPas();
 $clsOrgao = new clsOrgao();
 $clsStatus = new clsStatus();
 
-$condicao = " 1 = 1 ";
+$condicao = " 1 = 1 AND EXTRACT(YEAR from tb_pas.dt_inclusao) = ".$_SESSION['ano_corrente'];
 
 if (!empty($cod_orgao_array)) {
     $sql_orgao = "WITH RECURSIVE arvore AS ";
@@ -59,7 +59,6 @@ $sql .= " INNER JOIN tb_eixo ON tb_eixo.cod_eixo = tb_objetivo.cod_eixo ";
 $sql .= " INNER JOIN tb_perspectiva ON tb_perspectiva.cod_perspectiva = tb_objetivo.cod_perspectiva ";
 $sql .= " INNER JOIN tb_diretriz ON tb_diretriz.cod_diretriz = tb_objetivo.cod_diretriz ";
 $sql .= " WHERE ".$condicao;
-echo($sq);
 $q = pg_query($sql);
 
 if (!empty($cod_status_array)) {
@@ -76,11 +75,12 @@ if (!empty($cod_status_array)) {
         $a_cod_pas = str_replace(']', '', $a_cod_pas);
         $a_cod_pas = str_replace('[', '', $a_cod_pas);
 
-        $sql .= " AND tb_pas.cod_pas IN(".$a_cod_pas.")";        
+        $sql .= " AND tb_pas.cod_pas IN(".$a_cod_pas.") ";               
+    } else {
+        $sql .= " AND tb_pas.cod_pas = 0 ";
     }
     $q = pg_query($sql);    
 } 
-
 ?>
 <table class="table table-striped" cellspacing="0" cellpadding="0">
     <thead>
@@ -116,13 +116,25 @@ if (pg_num_rows($q) > 0) {
             </div>             
         </div> <br />  
         <div class="row">   
-            <div class="col-md-6" align="left">                
+            <div class="col-md-4" align="left">                
                 <a class="btn_painel btn-primary btn-xs" disabled="disabled" title="<?php echo($row['txt_eixo']) ?>"><?php echo($row['codigo_eixo']) ?></a>&nbsp;
                 <a class="btn_painel btn-primary btn-xs" disabled="disabled" title="<?php echo($row['txt_perspectiva']) ?>"><?php echo($row['codigo_perspectiva']) ?></a>&nbsp;
                 <a class="btn_painel btn-primary btn-xs" disabled="disabled" title="<?php echo($row['txt_diretriz']) ?>"><?php echo($row['codigo_diretriz']) ?></a>&nbsp;                               
             </div>
             <div class="col-md-3" align="left">            
-                <input type="text" class="form-control_custom" name="txt_ultimo_status" style="background-color:<?php echo($txt_cor) ?>;" value="<?php echo($txt_ultimo_status) ?>" disabled="disabled">
+                <input type="text" class="form-control_custom" name="txt_ultimo_status" style="background-color:<?php echo($txt_cor) ?>;" value="<?php echo($txt_ultimo_status) ?>" disabled="disabled">                
+            </div>
+            <div class="col-md-2" align="left">
+                <?php
+                $sql = "SELECT txt_controle FROM tb_pas         
+                INNER JOIN tb_pas_controle ON tb_pas_controle.cod_controle = tb_pas.cod_controle                            
+                WHERE tb_pas.cod_pas = ".$row['cod_pas'];
+                $q1 = pg_query($sql);
+                if (pg_num_rows($q1) > 0) {
+                    $rs1 = pg_fetch_array($q1);
+                    echo($rs1['txt_controle']);
+                }
+                ?>
             </div>
             <div class="col-md-3" align="left">  
                 <?php

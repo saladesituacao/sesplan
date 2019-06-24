@@ -89,10 +89,10 @@ else {
         </div>
 	
         <div class="row">
-        <div class="form-group col-md-12">
-            <label for="exampleInputEmail1">Descrição:</label>        
-            <textarea class="form-control" rows="5" id="txt_descricao" name="txt_descricao"><?=$rs1['txt_descricao']?></textarea>
-        </div>	  
+            <div class="form-group col-md-12">
+                <label for="exampleInputEmail1">Descrição:</label>        
+                <textarea class="form-control" rows="5" id="txt_descricao" name="txt_descricao"><?=$rs1['txt_descricao']?></textarea>
+            </div>	  
         </div>
         
         <div class="row">

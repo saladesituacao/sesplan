@@ -7,7 +7,7 @@ permissao_acesso_pagina(94);
 
 <div id="main" class="container-fluid">
     <h3 class="page-header">Ciclo do Planejamento > Incluir</h3>
-    <form action="incluir_arquivo.php" method="post" enctype="multipart/form-data" name="form1" id="form1">            
+    <form action="incluir_arquivo2.php" method="post" enctype="multipart/form-data" name="form1" id="form1">            
         <div class="row">
             <div class="col-md-4">                        
             </div>
@@ -71,7 +71,11 @@ permissao_acesso_pagina(94);
                             ?>
                                 <tr>
                                     <td><?php echo($rs1['txt_tipo_documento']) ?></td>
-                                    <td><?php echo(substr($rs1['txt_arquivo'], 35)) ?></td>
+                                    <td>
+                                        <a href="ver_arquivo.php?cod_tipo_documento=<?php echo($rs1['cod_tipo_documento']) ?>">
+                                            <?php echo(substr($rs1['txt_arquivo'], 35)) ?>
+                                        </a>
+                                    </td>
                                     <td><?php echo($rs1['txt_usuario']) ?></td>
                                     <td><?php echo(formatarDataBrasil($rs1['dt_inclusao'])) ?></td>
                                     <td class="actions">									                                    

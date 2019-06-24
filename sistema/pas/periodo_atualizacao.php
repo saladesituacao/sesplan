@@ -121,10 +121,10 @@ if (empty($_REQUEST['log'])) {
                                         if (empty($rs1['dt_reabrir'])) { ?>
                                             <a class="btn btn-warning btn-xs" href="periodo_atualizacao.php?id=<?php echo($rs1['cod_chave']) ?>">Editar</a>
                                         <?php
-                                        } ?>
+                                        } ?> 
                                         <a class="btn btn-danger btn-xs" onclick="return Excluir(<?php echo($rs1['cod_chave']) ?>);" >Excluir</a>
-                                        <?php 
-                                        if (!$clsPas->RegraPeriodo() && empty($rs1['dt_reabrir'])) { 
+                                        <?php                                         
+                                        if (empty($rs1['dt_reabrir'])) { 
                                         ?>
                                             <a class="btn btn-primary btn-xs" onclick="return Reabrir(<?php echo($rs1['cod_chave']) ?>);" >Reabrir Período</a>
                                         <?php

@@ -1,6 +1,7 @@
 <?php
 include_once(__DIR__ . "/include/conexao.php");
 include_once (__DIR__ . "/classes/clsUsuario.php");
+include_once (__DIR__ . "/classes/clsPerfil.php");
 
 $cpf = $_POST['field_login'];
 $senha = $_POST['field_password'];
@@ -9,6 +10,8 @@ if ($cpf == "" || $senha == "") {
     echo("ERRO AO CONECTAR");
     exit();
 }
+
+$clsPerfil = new clsPerfil();
 
 if ($_SESSION["txt_tipo_autenticacao"] == "1") {
     $ldap_server = $_SESSION['ldap_server'];
@@ -63,11 +66,14 @@ if ($_SESSION["txt_tipo_autenticacao"] == "1") {
                         }
                         
                         if ($_SESSION["token"] != '') {
+                            //PLANO DE AÇÃO
+                            $clsPerfil->PlanoAcao();  
+
                             js_go("index.php");
                         } else {
                             js_go("login.php?mensagem=5");
                             exit();
-                        }
+                        }                                              
                     }
                 }
                 else {                
@@ -130,8 +136,10 @@ if ($_SESSION["txt_tipo_autenticacao"] == "1") {
         js_go("login.php?mensagem=5");
         exit();
     }    
+        
+    //PLANO DE AÇÃO
+    $clsPerfil->PlanoAcao();  
 
-    
     js_go("index.php");    
 } else {
     js_go("login.php?mensagem=6");

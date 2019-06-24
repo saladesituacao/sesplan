@@ -3,17 +3,18 @@ class clsCiclo {
     public $cod_tipo_documento;
     public $txt_arquivo;
     public $cod_usuario;
+    public $binario;
 
     public function IncluirArquivo() { 
-        $sql = "INSERT INTO tb_ciclo_planejamento(cod_tipo_documento, txt_arquivo, cod_usuario) ";
-        $sql .= " VALUES(".$this->cod_tipo_documento.",'".$this->txt_arquivo."', ". $this->cod_usuario.")";
+        $sql = "INSERT INTO tb_ciclo_planejamento(cod_tipo_documento, txt_arquivo, cod_usuario, byte) ";
+        $sql .= " VALUES(".$this->cod_tipo_documento.",'".$this->txt_arquivo."', ". $this->cod_usuario.", '".$this->binario."')";
         pg_query($sql);
         Auditoria(131, "", $sql);  
     }
 
     public function AlterarArquivo() {
-        $sql = "UPDATE tb_ciclo_planejamento SET txt_arquivo = '".$this->txt_arquivo."', cod_usuario = ".$this->cod_usuario."";
-        $sql .= " WHERE cod_tipo_documento = ".$this->cod_tipo_documento;
+        $sql = "UPDATE tb_ciclo_planejamento SET txt_arquivo = '".$this->txt_arquivo."', cod_usuario = ".$this->cod_usuario.", ";
+        $sql .= " byte = '".$this->binario."' WHERE cod_tipo_documento = ".$this->cod_tipo_documento;
         pg_query($sql);
         Auditoria(131, "", $sql);
     }

@@ -23,6 +23,14 @@ function destacar_ativo($valor) {
     }
 }
 
+function destacar_habilitado($valor) {
+    if ($valor == "S") {
+        return "<font color=\"green\"><b>SIM</b></font>";
+    } else {
+        return "<font color=\"red\"><b>NÃO</b></font>";
+    }
+}
+
 function destacar_ativo2($valor) {
     if ($valor == "1") {
         return "SIM";
@@ -130,7 +138,7 @@ function DataBanco($dateSql){
     $ano= substr($dateSql, 6);
     $mes= substr($dateSql, 3,-5);
     $dia= substr($dateSql, 0,-8);
-    return $ano."-".$mes."-".$dia;
+    return $ano."-".$mes."-".$dia;    
 }
 
 function formatarDataBrasil($data){    
@@ -236,4 +244,21 @@ function remove_acento($textos) {
     }
     return $textos ;
 }
+
+function fn_owner($sql) {
+    return str_replace('tb_', 'SESPLAN.tb_', $sql);
+}
+
+
+function limitarTexto($texto, $limite){
+    $contador = strlen($texto);
+    if ( $contador >= $limite ) {
+        $texto = substr($texto, 0, strrpos(substr($texto, 0, $limite), ' ')) . '...';
+        return $texto;
+    }
+    else{
+      return $texto;
+    }
+  }
+
 ?>

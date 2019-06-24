@@ -29,7 +29,7 @@ $rsAcao = pg_fetch_array($q);
 $clsUsuario = new clsUsuario();
 $clsPas = new clsPas();
 
-if($clsPas->RegraPeriodo()) {
+if($clsPas->RegraPeriodo($cod_pas)) {
     $css_periodo = "";
 } else {
     $css_periodo = "disabled";
@@ -102,7 +102,8 @@ if($clsPas->RegraPeriodo()) {
                             </div>
                         </div>
                     </div>
-                <?php                    
+                <?php 
+                    $cod_usuario_analise = "";                   
                 }
 
                 ?>

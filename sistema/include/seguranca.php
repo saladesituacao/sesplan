@@ -11,7 +11,7 @@ function verifica_seguranca()
 }
 
 function permissao_acesso($cod_permissao) 
-{
+{    
     if ($_SESSION['txt_login'] == "02466269171" || $_SESSION['txt_login'] == "78899648115") {
         return true;
     }
@@ -30,7 +30,7 @@ function permissao_acesso($cod_permissao)
 }
 
 function permissao_acesso_pagina($cod_permissao)
-{
+{    
     if (!permissao_acesso($cod_permissao)) {
         js_go($_SESSION["txt_caminho_aplicacao"]."/include/pagina_acesso.php");
     }

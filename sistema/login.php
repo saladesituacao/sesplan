@@ -15,13 +15,16 @@
                 <div class="col-md-4">
                     <div class="box--shadow">
                         <div class="box box--body-auth">                           
-                            <div class="box__logo">                                                            
+                            <div class="box__logo">
+                                <!--<a href="http://www.brasilia.df.gov.br/" target="blank">
+                                    <img src="assets/img/logo_gov_bsb.png" class="img-responsive" alt="SESPLAN - WEB" />                                    
+                                </a>-->	                                
                                 <img src="assets/img/sesplan-logo-para-fundo-branco.png" class="img-responsive" />
                             </div><!-- / LOGO -->                            
                             <form action="autenticar.php" method="post">								
                                 <div class="form-group">
                                     <label for="field_login" class="label-control">Login:</label>
-                                    <input type="text" id="field_login" name="field_login" class="form-control" placeholder="Usuário LDAP SES">
+                                    <input type="text" id="field_login" name="field_login" class="form-control" placeholder="Digite seu usuário da Rede SES/DF">
                                 </div>
                                 <div class="form-group">
                                     <label for="field_password" class="label-control">Senha:</label>
@@ -63,7 +66,7 @@
             alert('USUÁRIO INATIVO NO SESPLAN.'); 
             self.location.href = 'login.php';  
         } else if (res[1] == 'mensagem=2') {
-            alert("FALHA AO AUTENTICAR NO LDAP.");
+            alert("FALHA AO AUTENTICAR NA REDE SES.");
             self.location.href = 'login.php';
         } else if (res[1] == 'mensagem=3') {
             alert("USUÁRIO NÃO CADASTRADO NO SESPLAN.");

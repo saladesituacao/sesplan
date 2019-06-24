@@ -1,0 +1,155 @@
+﻿<!DOCTYPE html>
+<html lang="pt-br">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>SESPLAN</title>
+		
+		<link rel="stylesheet" href="../assets/css/main.css">
+		<link rel="stylesheet" href="css/style.css">	
+			
+		<link href="https://afeld.github.io/emoji-css/emoji.css" rel="stylesheet">
+		<link href="css/aba.css" rel="stylesheet">
+		<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+	</head>
+	<body>
+		<nav class="navbar navbar-default">
+			<div class="container">
+				<!-- Collect the nav links, forms, and other content for toggling -->
+				<div class="navbar-collapse collapse" id="bs-example-navbar-collapse-1" >
+					<ul class="nav navbar-nav navbar-left">
+						<li><a class="navbar-brand" href="dashboard">
+							<img src="../assets/img/icone_tutorial.png" alt="SESPLAN">
+						</a>
+						</li>       					
+						<li class="active"><a href="#">Informações</a></li>
+						<li class="dropdown">        
+							<a class="dropdown-toggle" data-toggle="dropdown" href="#">Cadastros
+							<span class="caret"></span></a>
+							<ul class="dropdown-menu">
+								<li><a href="#">EIXOS</a></li>
+								<li><a href="#">DIRETRIZES</a></li>   							                    
+								<li><a href="#">OBJETIVOS</a></li>
+							</ul>
+						</li>     
+						<li class="active"><a href="pas_listar.html">PAS</a></li>		                   
+						<li class="active"><a href="#">SAG</a></li>		                   
+						<li class="active"><a href="#">Produção Atividades</a></li>		                   																				
+						<li class="active"><a href="orcamento.html">Execução Orçamentária</a></li>		                   
+					</ul>                   
+				</div><!-- /navbar-collapse -->
+			</div><!-- /container -->
+		</nav>
+		<div align="center">
+			<a href="index.html"><strong>FERRAMENTA DE MONITORAMENTO E AVALIAÇÃO DO PLANEJAMENTO ESTRATÉGICO</strong></a>
+		</div>
+		<div class="busca">
+			<div class="container-fluid">
+				<div class="row">
+						<div class="col-md-3 col-sm-3">
+						<a href="#" target="_blank"><img src="../assets/img/logo_gov_bsb.png" alt="Governo do Distrito Federal"></a>
+					</div>	
+					<div class="col-md-3 col-sm-3"></div>
+					<div class="col-md-3 col-sm-3"></div>
+					<div class="col-md-3 col-sm-3">
+								
+					</div>					
+				</div>
+			</div>
+		</div>		
+		<div class="container-fluid">			
+			<div class="box box--default padding-10">				
+				<div class="row">
+					<center><h3>PAS</h3></center>	
+				</div>		
+				<div class="row">
+					<div class="container">
+						<form class="form-horizontal" id="frm1">
+							<div class="row">
+								<div class="form-group col-md-4">
+									<strong>Diretriz:</strong>
+									<select id="sel1">
+										<option></option>
+										<option>
+											Diretriz PDS - D1: Ampliação e qualificação das Ações de saúde a toda população em suas necessidades específicas														
+										</option>																												
+									</select>
+								</div>
+							</div>
+							<div class="row">
+								<div class="form-group col-md-4">
+									<strong>Objetivo:</strong>
+									<select id="sel1">
+										<option></option>
+										<option>
+											Objetivo: 1.1.1. Fortalecer a política de Atenção Primária à saúde com foco na expansão da Estratégia da Saúde da Família 								
+										</option>																												
+									</select>
+								</div>
+							</div>								
+							<div class="row">
+								<div class="form-group col-md-4">
+									<strong>Metas:</strong>
+									<input type="text" class="form-control" id="metas">
+								</div>
+								<div class="form-group col-md-1">
+									&nbsp;
+								</div>
+								<div class="form-group col-md-4">
+									<strong>Resultados:</strong>
+									<input type="text" class="form-control" id="resultados">
+								</div>
+							</div>							
+							<div class="row">
+								<div class="form-group col-md-4">
+									<strong>Início Previsto:</strong>
+									<input type="text" class="form-control" id="metas">
+								</div>
+								<div class="form-group col-md-1">
+									&nbsp;
+								</div>
+								<div class="form-group col-md-4">
+									<strong>Fim Previsto:</strong>
+									<input type="text" class="form-control" id="resultados">
+								</div>	
+							</div>		
+							<div class="row">
+								<div class="form-group col-md-4">
+									<strong>Início Efetivo:</strong>
+									<input type="text" class="form-control" id="metas">
+								</div>
+								<div class="form-group col-md-1">
+									&nbsp;
+								</div>
+								<div class="form-group col-md-4">
+									<strong>Fim Efetivo:</strong>
+									<input type="text" class="form-control" id="resultados">
+								</div>	
+							</div>								
+							<div class="row">
+								<div class="form-group col-md-4">
+									<strong>Situação:</strong>
+									<select id="sel1">
+										<option></option>
+										<option>Atrasada</option>
+										<option>Concluída</option>																		
+									</select>
+								</div>	
+							</div>
+							<div class="form-group col-md-4">															
+								<button type="submit" class="btn btn-primary">Incluir</button>
+								<button type="button" class="btn" onclick="self.location.href='pas_listar.html'">Voltar</button>
+							</div>																																											
+						</form>
+					</div>
+				</div>			
+			</div>
+					
+		</div>
+		<footer class="footer">
+			<p>&nbsp;</p>
+		</footer>
+		<script src="../assets/js/main.js"></script>		
+	</body>
+</html>

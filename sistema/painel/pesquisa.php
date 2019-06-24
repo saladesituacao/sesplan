@@ -17,6 +17,15 @@ $btn_empenho = $_POST['btn_empenho'];
 $cod_acao_pas = $_POST['cod_acao_pas'];
 $cod_etapa_sag = $_POST['cod_etapa_sag'];
 
+if (!empty($_REQUEST['cod_ano_corrente'])) {
+    $_SESSION['ano_corrente'] = $_REQUEST['cod_ano_corrente'];
+}
+if (!empty($_REQUEST['cod_mes_corrente'])) {
+    $_SESSION['mes_corrente'] = $_REQUEST['cod_mes_corrente'];
+}
+if (!empty($_REQUEST['cod_bimestre_corrente'])) {
+    $_SESSION['cod_bimestre_corrente'] = $_REQUEST['cod_bimestre_corrente'];
+}
 if (!empty($cod_eixo)) {
     $cod_eixo_array = implode('|', $cod_eixo);
     $_cod_eixo_array = implode(',', $cod_eixo);
@@ -63,8 +72,128 @@ if (!empty($cod_etapa_sag)) {
             <div class="col-md-3"> 
                 <div class="jumbotron" style="background-image:url(<?php echo($_SESSION["txt_caminho_aplicacao"]) ?>/include/imagens/fundo_painel.jpg);" class="img-responsive">                                   
                     <div class="row">
+                        <div class="col-md-3" align="left">&nbsp;</div>                        
+                        <div class="col-md-6" align="left">
+                            <center><font color="blue">Pesquisa</font></center><br />
+                            <center><font color="blue">Competência</font></center>                            
+                            <select id="cod_ano_corrente" name="cod_ano_corrente" class="chosen-select col-md-4">
+                                <option value="2019" <?php
+                                                if (strval($_SESSION['ano_corrente']) == "2019") {
+                                                    echo("selected");
+                                                }
+                                                ?>>2019</option>
+                                <option value="2018" <?php
+                                                if (strval($_SESSION['ano_corrente']) == "2018") {
+                                                    echo("selected");
+                                                }
+                                                ?>>2018</option>
+                            </select>
+                            <div class="row">&nbsp;</div>
+                            <?php if ($cod_modulo == 2) { ?>
+                                <font color="blue">Bimestre</font><br />
+                                <select id="cod_bimestre_corrente" name="cod_bimestre_corrente" class="chosen-select col-md-6">
+                                <option value="1" <?php
+                                                    if (strval($_SESSION['cod_bimestre_corrente']) == "1") {
+                                                        echo("selected");
+                                                    }
+                                                    ?>>Janeiro/Fevereiro</option>                               
+                                <option value="2" <?php
+                                                    if (strval($_SESSION['cod_bimestre_corrente']) == "2") {
+                                                        echo("selected");
+                                                    }
+                                                    ?>>Março/Abril</option>                               
+                                <option value="3" <?php
+                                                    if (strval($_SESSION['cod_bimestre_corrente']) == "3") {
+                                                        echo("selected");
+                                                    }
+                                                    ?>>Maio/Junho</option>                                
+                                <option value="4" <?php
+                                                    if (strval($_SESSION['cod_bimestre_corrente']) == "4") {
+                                                        echo("selected");
+                                                    }
+                                                    ?>>Julho/Agosto</option>                              
+                                <option value="5" <?php
+                                                    if (strval($_SESSION['cod_bimestre_corrente']) == "5") {
+                                                        echo("selected");
+                                                    }
+                                                    ?>>Setembro/Outubro</option>                               
+                                <option value="6" <?php
+                                                    if (strval($_SESSION['cod_bimestre_corrente']) == "6") {
+                                                        echo("selected");
+                                                    }
+                                                    ?>>Novembro/Dezembro</option>                        
+                                </select>
+                            <?php } ?>
+                            <?php if ($cod_modulo == 3) { ?>
+                                <font color="blue">Mês</font><br />
+                                <select id="cod_mes_corrente" name="cod_mes_corrente" class="chosen-select col-md-6">
+                                <option value="1" <?php
+                                                    if (strval($_SESSION['mes_corrente']) == "1") {
+                                                        echo("selected");
+                                                    }
+                                                    ?>>Janeiro</option>
+                                <option value="2" <?php
+                                                    if (strval($_SESSION['mes_corrente']) == "2") {
+                                                        echo("selected");
+                                                    }
+                                                    ?>>Fevereiro</option>
+                                <option value="3" <?php
+                                                    if (strval($_SESSION['mes_corrente']) == "3") {
+                                                        echo("selected");
+                                                    }
+                                                    ?>>Março</option>
+                                <option value="4" <?php
+                                                    if (strval($_SESSION['mes_corrente']) == "4") {
+                                                        echo("selected");
+                                                    }
+                                                    ?>>Abril</option>
+                                <option value="5" <?php
+                                                    if (strval($_SESSION['mes_corrente']) == "5") {
+                                                        echo("selected");
+                                                    }
+                                                    ?>>Maio</option>
+                                <option value="6" <?php
+                                                    if (strval($_SESSION['mes_corrente']) == "6") {
+                                                        echo("selected");
+                                                    }
+                                                    ?>>Junho</option>
+                                <option value="7" <?php
+                                                    if (strval($_SESSION['mes_corrente']) == "7") {
+                                                        echo("selected");
+                                                    }
+                                                    ?>>Julho</option>
+                                <option value="8" <?php
+                                                    if (strval($_SESSION['mes_corrente']) == "8") {
+                                                        echo("selected");
+                                                    }
+                                                    ?>>Agosto</option>
+                                <option value="9" <?php
+                                                    if (strval($_SESSION['mes_corrente']) == "9") {
+                                                        echo("selected");
+                                                    }
+                                                    ?>>Setembro</option>
+                                <option value="10" <?php
+                                                    if (strval($_SESSION['mes_corrente']) == "10") {
+                                                        echo("selected");
+                                                    }
+                                                    ?>>Outubro</option>
+                                <option value="11" <?php
+                                                    if (strval($_SESSION['mes_corrente']) == "11") {
+                                                        echo("selected");
+                                                    }
+                                                    ?>>Novembro</option>
+                                <option value="12" <?php
+                                                    if (strval($_SESSION['mes_corrente']) == "12") {
+                                                        echo("selected");
+                                                    }
+                                                    ?>>Dezembro</option>
+                                </select>
+                            <?php } ?>                            
+                        </div>
+                    </div><br />
+                    <div class="row">
                         <div class="col-md-12" align="left">
-                            <center><font color="blue">ÁRVORE SES</font></center>
+                            <center><font color="blue">Árvore SES</font></center>
                             <div id="div_eixo"></div>               
                             <div id="div_perspectiva"></div>
                             <div id="div_diretriz"></div> 
@@ -75,7 +204,7 @@ if (!empty($cod_etapa_sag)) {
                         <div class="col-md-12" align="left"><?php 
                             if ($cod_modulo == 1) {?>
                                 <div class="row">                                    
-                                    <center><font color="blue">AÇÃO</font></center>
+                                    <center><font color="blue">Ação</font></center>
                                     <div class="col-md-12" align="left">  
                                         <select id="cod_acao_pas" name="cod_acao_pas[]" data-placeholder="." multiple class="chosen-select">                                  
                                             <option></option>
@@ -100,7 +229,7 @@ if (!empty($cod_etapa_sag)) {
 
                             }
                             else if ($cod_modulo == 3) { ?>
-                                <center><font color="blue">INSTRUMENTOS DE PLANEJAMENTO</font></center>
+                                <center><font color="blue">Instrumentos de Planejamento</font></center>
                                 <?php
                                 $q1 = pg_query("SELECT ds_tag FROM tb_indicador_tag GROUP BY ds_tag");
                                 while ($rs1 = pg_fetch_array($q1)) { 
@@ -120,49 +249,27 @@ if (!empty($cod_etapa_sag)) {
                             } else if ($cod_modulo == 2 || $cod_modulo == 4) { ?>
                                 <?php if ($cod_modulo == 2) { ?>
                                     <div class="row">
-                                        <center><font color="blue">EMENDA PARLAMENTAR</font></center>
-                                        <div class="col-md-6" align="left">                    
-                                            <div class="form-check">  
-                                                <?php 
-                                                $checked1 = "";
-                                                $checked2 = "";
-                                                if (strval($btn_emenda_parlamentar) == '1') {
-                                                    $checked1 = "checked";
-                                                    $checked2 = "";
-                                                } else if (strval($btn_emenda_parlamentar) == '0') {
-                                                    $checked1 = "";
-                                                    $checked2 = "checked";
-                                                }
-                                                ?>
-                                                <input type="radio" class="form-check-input" name="btn_emenda_parlamentar" value="1" <?php echo($checked1); ?> />SIM
-                                                &nbsp;
-                                                <input type="radio" class="form-check-input" name="btn_emenda_parlamentar" value="0" <?php echo($checked2); ?> />NÃO
-                                            </div>              
+                                        <center><font color="blue">Emenda Parlamentar</font></center>
+                                        <div class="col-md-12" align="left">                    
+                                            <select id="btn_emenda_parlamentar" name="btn_emenda_parlamentar" class="form-control">
+                                                <option value=""></option>
+                                                <option value="0" <?php if (strval($btn_emenda_parlamentar) == "0") { echo("selected");}?>>NÃO</option>
+                                                <option value="1"> <?php if (strval($btn_emenda_parlamentar) == "1") { echo("selected");}?>SIM</option>
+                                            </select>
                                         </div>
-                                    </div>
+                                    </div><br />
                                     <div class="row">
-                                        <center><font color="blue">EMPENHO</font></center>
-                                        <div class="col-md-6" align="left">                    
-                                            <div class="form-check">  
-                                                <?php 
-                                                $checked1 = "";
-                                                $checked2 = "";
-                                                if (strval($btn_empenho) == '1') {
-                                                    $checked1 = "checked";
-                                                    $checked2 = "";
-                                                } else if (strval($btn_empenho) == '0') {
-                                                    $checked1 = "";
-                                                    $checked2 = "checked";
-                                                }
-                                                ?>
-                                                <input type="radio" class="form-check-input" name="btn_empenho" value="1" <?php echo($checked1); ?> />SIM
-                                                &nbsp;
-                                                <input type="radio" class="form-check-input" name="btn_empenho" value="0" <?php echo($checked2); ?> />NÃO
-                                            </div>              
+                                        <center><font color="blue">Empenho</font></center>
+                                        <div class="col-md-12" align="left">                    
+                                            <select id="btn_empenho" name="btn_empenho" class="form-control">
+                                                <option value=""></option>
+                                                <option value="0" <?php if (strval($btn_empenho) == "0") { echo("selected");}?>>NÃO</option>                                                    
+                                                <option value="1" <?php if (strval($btn_empenho) == "1") { echo("selected");}?>>SIM</option>';
+                                            </select>              
                                         </div>
-                                    </div>
+                                    </div><br />
                                     <div class="row">                                    
-                                        <center><font color="blue">ETAPA</font></center>
+                                        <center><font color="blue">Etapa</font></center>
                                         <div class="col-md-12" align="left">  
                                             <select id="cod_etapa_sag" name="cod_etapa_sag[]" data-placeholder="." multiple class="chosen-select">                                  
                                                 <option></option>
@@ -182,10 +289,10 @@ if (!empty($cod_etapa_sag)) {
                                                 } ?>  
                                             </select> 
                                         </div> 
-                                    </div>
+                                    </div><br />
                                 <?php } ?>
                                 <div class="row">                                    
-                                    <center><font color="blue">PROGRAMAS DE TRABALHO</font></center>
+                                    <center><font color="blue">Programas de Trabalho</font></center>
                                     <div class="col-md-12" align="left">  
                                         <select id="cod_progr" name="cod_progr[]" data-placeholder="." multiple class="chosen-select">                                  
                                             <option></option>
@@ -220,7 +327,7 @@ if (!empty($cod_etapa_sag)) {
                     </div><br />                       
                     <div class="row">
                         <div class="col-md-12" align="left">
-                            <center><font color="blue">ÁREA RESPONSÁVEL</font></center>
+                            <center><font color="blue">Área Responsável</font></center>
                             <?php                             
                             $q1 = pg_query("SELECT * FROM tb_orgao WHERE cod_exibir_consulta = 1 AND cod_orgao_superior IS NULL AND cod_ativo = 1 AND txt_sigla NOT LIKE '%/%' ORDER BY txt_sigla");                     
                             while ($rs1 = pg_fetch_array($q1)) { 
@@ -269,7 +376,7 @@ if (!empty($cod_etapa_sag)) {
                     </div><br />                               
                     <div class="row">
                         <div class="col-md-12" align="left">
-                            <center><font color="blue">STATUS</font><center>
+                            <center><font color="blue">Status</font><center>
                             <?php 
                             $sql = "SELECT tbsm.cod_status, tbs.txt_status FROM tb_status_modulo tbsm ";
                             $sql .= " INNER JOIN tb_status tbs ON tbs.cod_status = tbsm.cod_status ";
@@ -312,7 +419,7 @@ if (!empty($cod_etapa_sag)) {
                                     require('sag.php');
                                     break;
                                 case "3":
-                                    require('indicador.php');
+                                    require('indicador2.php');
                                     break;
                                 case "4":
                                     require('execucao_orcamentaria.php');

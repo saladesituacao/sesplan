@@ -10,10 +10,13 @@ $clsStatus = new clsStatus();
 $clsUsuario = new clsUsuario();
 $clsOrgao = new clsOrgao();
 
+$r = pg_fetch_array(pg_query("SELECT DATE_PART('YEAR', CURRENT_TIMESTAMP) AS ANO"));
+
 $condicao = " 1 = 1 AND tab_siggo_sesplan.inmes = (SELECT MAX(t.inmes) FROM tab_siggo_sesplan t WHERE ";
 $condicao .= " t.cofuncao = tab_siggo_sesplan.cofuncao AND t.cosubfuncao = tab_siggo_sesplan.cosubfuncao " ;
 $condicao .= " AND t.coprograma = tab_siggo_sesplan.coprograma AND t.coprojeto = tab_siggo_sesplan.coprojeto ";
 $condicao .= " AND t.cosubtitulo = tab_siggo_sesplan.cosubtitulo) ";
+$condicao .= " AND substring(tab_siggo_sesplan.data_extracao from 1 for 4) = '".$r['ano']."'";
 
 if (!empty($cod_status_array)) {
     $a_cod_status_array = explode(',', $cod_status_array);

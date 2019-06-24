@@ -10,10 +10,16 @@ $clsUsuario = new clsUsuario();
 $clsOrgao = new clsOrgao();
 
 $tabela = "";
-$condicao = " 1 = 1 AND tb_sag_analise.cod_bimestre = (SELECT MAX(j.cod_bimestre) FROM tb_sag_analise j WHERE j.cod_sag = tb_sag.cod_sag) ";
+//$condicao = " 1 = 1 AND tb_sag_analise.cod_bimestre = (SELECT MAX(j.cod_bimestre) FROM tb_sag_analise j WHERE j.cod_sag = tb_sag.cod_sag) ";
+$condicao = " 1 = 1 AND tb_sag_analise.cod_bimestre = ".$_SESSION['cod_bimestre_corrente']; //$clsSag->MesMonitoramentoPainel();
+$condicao .= " AND EXTRACT(YEAR from tb_sag.dt_inclusao) = ".$_SESSION['ano_corrente'];
+$condicao2 = " 1 = 1 AND tb_sag.cod_sag NOT IN(SELECT cod_sag FROM tb_sag_analise WHERE cod_bimestre = ".$_SESSION['cod_bimestre_corrente'].")";
+$condicao2 .= " AND EXTRACT(YEAR from tb_sag.dt_inclusao) = ".$_SESSION['ano_corrente'];
 
 if (!empty($cod_status_array)) {
     $condicao .= " AND tb_sag_analise.cod_status IN (".$cod_status_array.")";
+    $condicao2 .= " AND tb_sag_analise.cod_status IN (".$cod_status_array.")";
+    $cod_status_array2 = explode(",", trim($cod_status_array));    
 }
 
 if (!empty($cod_orgao_array)) {
@@ -33,6 +39,7 @@ if (!empty($cod_orgao_array)) {
     $_cod_orgao = str_replace('[', '', $_cod_orgao);
 
     $condicao .= " AND tb_sag.cod_orgao IN (".$_cod_orgao.") ";
+    $condicao2 .= " AND tb_sag.cod_orgao IN (".$_cod_orgao.") ";
 }
 
 if (!empty($cod_progr)) {
@@ -44,6 +51,7 @@ if (!empty($cod_progr)) {
     $_cod_progr = str_replace('[', '', $_cod_progr);
 
     $condicao .= " AND tb_sag.cod_programa_trabalho IN (".$_cod_progr.") ";
+    $condicao2 .= " AND tb_sag.cod_programa_trabalho IN (".$_cod_progr.") ";
 }
 if (!empty($cod_etapa_sag)) {
     foreach ($cod_etapa_sag as &$value) {        
@@ -54,21 +62,31 @@ if (!empty($cod_etapa_sag)) {
     $_cod_etapa_sag = str_replace('[', '', $_cod_etapa_sag);
 
     $condicao .= " AND tb_sag.cod_sag IN (".$_cod_etapa_sag.") ";
+    $condicao2 .= " AND tb_sag.cod_sag IN (".$_cod_etapa_sag.") ";
 }
+
 if (!empty($btn_emenda_parlamentar)) {
     $condicao .= " AND tb_programa_trabalho.cod_emenda = ".$btn_emenda_parlamentar;
+    $condicao2 .= " AND tb_programa_trabalho.cod_emenda = ".$btn_emenda_parlamentar;
+} else {
+    $condicao .= " AND tb_programa_trabalho.cod_emenda IN (0,1)";
+    $condicao2 .= " AND tb_programa_trabalho.cod_emenda IN (0,1)";
 }
 if (!empty($_cod_eixo_array)) {
     $condicao .= " AND tb_sag.cod_objetivo IN(SELECT cod_objetivo FROM tb_objetivo WHERE cod_eixo IN(".$_cod_eixo_array.")) ";    
+    $condicao2 .= " AND tb_sag.cod_objetivo IN(SELECT cod_objetivo FROM tb_objetivo WHERE cod_eixo IN(".$_cod_eixo_array.")) ";
 }
 if (!empty($_cod_perspectiva_array)) {
     $condicao .= " AND tb_sag.cod_objetivo IN(SELECT cod_objetivo FROM tb_objetivo WHERE cod_perspectiva IN(".$_cod_perspectiva_array.")) ";    
+    $condicao2 .= " AND tb_sag.cod_objetivo IN(SELECT cod_objetivo FROM tb_objetivo WHERE cod_perspectiva IN(".$_cod_perspectiva_array.")) ";    
 }
 if (!empty($_cod_diretriz_array)) {
     $condicao .= " AND tb_sag.cod_objetivo IN(SELECT cod_objetivo FROM tb_objetivo WHERE cod_diretriz IN(".$_cod_diretriz_array.")) ";    
+    $condicao2 .= " AND tb_sag.cod_objetivo IN(SELECT cod_objetivo FROM tb_objetivo WHERE cod_diretriz IN(".$_cod_diretriz_array.")) ";    
 }
 if (!empty($_cod_objetivo_array)) {
     $condicao .= " AND tb_sag.cod_objetivo IN(".$_cod_objetivo_array.") ";
+    $condicao2 .= " AND tb_sag.cod_objetivo IN(".$_cod_objetivo_array.") ";
 }
 
 $campo = " tb_sag.*, tb_sag_analise.cod_usuario, codigo_eixo, txt_eixo, codigo_perspectiva, txt_perspectiva, ";
@@ -81,12 +99,31 @@ $sql .= " INNER JOIN tb_objetivo ON tb_objetivo.cod_objetivo = tb_sag.cod_objeti
 $sql .= " INNER JOIN tb_eixo ON tb_eixo.cod_eixo = tb_objetivo.cod_eixo ";
 $sql .= " INNER JOIN tb_perspectiva ON tb_perspectiva.cod_perspectiva = tb_objetivo.cod_perspectiva ";
 $sql .= " INNER JOIN tb_diretriz ON tb_diretriz.cod_diretriz = tb_objetivo.cod_diretriz ";
-
 $sql .= " WHERE ".$condicao;
+
+if (@in_array("24", $cod_status_array2) || empty($cod_status_array)) {       
+    $sql .= " UNION ";
+
+    $sql .= "SELECT ".$campo;
+    $sql .= " FROM tb_sag LEFT JOIN tb_sag_analise ON tb_sag_analise.cod_sag = tb_sag.cod_sag ";
+    $sql .= " INNER JOIN tb_programa_trabalho ON tb_programa_trabalho.cod_programa_trabalho = tb_sag.cod_programa_trabalho ";
+    $sql .= " INNER JOIN tb_objetivo ON tb_objetivo.cod_objetivo = tb_sag.cod_objetivo ";
+    $sql .= " INNER JOIN tb_eixo ON tb_eixo.cod_eixo = tb_objetivo.cod_eixo ";
+    $sql .= " INNER JOIN tb_perspectiva ON tb_perspectiva.cod_perspectiva = tb_objetivo.cod_perspectiva ";
+    $sql .= " INNER JOIN tb_diretriz ON tb_diretriz.cod_diretriz = tb_objetivo.cod_diretriz ";
+    $sql .= " WHERE ".$condicao2;
+    
+    $sql = str_replace("AND tb_sag_analise.cod_status IN (24)", "", $sql);
+    $sql = str_replace("tb_sag_analise.cod_status IN (24)", "", $sql);
+    $sql = str_replace(",24", "", $sql);    
+}
+
 $q = pg_query($sql);
-//$sql = str_replace("tb_", "SESPLAN.tb_", $sql);
-//$sql = str_replace("tab_", "SESPLAN.tab_", $sql);
-//echo($sql);
+/*
+$sql = str_replace("tb_", "SESPLAN.tb_", $sql);
+$sql = str_replace("tab_", "SESPLAN.tab_", $sql);
+echo($sql);
+*/
 ?>
 <table class="table table-striped" cellspacing="0" cellpadding="0">
     <thead>
@@ -126,14 +163,12 @@ if (pg_num_rows($q) > 0) {
             $ct_sit += 1;
         }        
 
-        if (!empty($btn_empenho)) {
+        if (!empty($btn_empenho)) {            
             if ($empenhado != "0" && !empty($empenhado)) {
                 $mostrar = true;
             }
         } else {
-            if ($empenhado == "0" || empty($empenhado)) {
-                $mostrar = true;
-            }
+            $mostrar = true;
         }
         
         if ($mostrar == true) {
@@ -151,6 +186,10 @@ if (pg_num_rows($q) > 0) {
             <div class="row">         
                 <div class="col-md-12" align="left">
                     <strong><?php echo($rs['codigo_objetivo']) ?>  <?php echo($rs['txt_objetivo']) ?></strong><br />
+                    <b>Etapa SAG:</b>
+                    <?php echo($row['nr_etapa_trabalho']) ?>
+                    <br />
+                    <b>Descrição da Etapa:</b>
                     <?php echo($row['txt_etapa_trabalho']) ?>
                 </div>             
             </div> <br />
